@@ -1,0 +1,49 @@
+# Install and configur ntpd
+- name: install the latest version of ntp
+  package: name={{ ntpd_pkg_name }} state=latest
+- name: start/enable {{ ntpd_pkg_name }}
+  service: name=ntpd state=started enabled=yes
+  when: ansible_os_family == 'RedHat'
+  tags: ntpd
+
+# Prevent Users Mounting USB Storage
+- name: Prevent Users Mounting USB Storage
+  raw: echo "install usb-storage /bin/false" > /etc/modprobe.d/usb-storage.conf
+  tags: usb_storage
+
+# Enable Secure (high quality) Password Policy
+- name: using SHA512 instead of MD5
+  command: authconfig --passalgo=sha512 --update 
+  tags: sha512
+
+# Configure Password Policy
+- name: Configure Password Policy
+  template:
+    src=password_policy.j2
+    dest=/etc/security/pwquality.conf
+    #validate="/etc/security/pwquality.conf %s"
+  tags: password_policy
+
+# Secure /etc/login.defs Pasword Policy
+- name: Secure /etc/login.defs Pasword Policy
+  lineinfile:
+    dest: /etc/login.defs
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - {
+      regexp: "^PASS_MIN_LEN",
+      line: "PASS_MIN_LEN 14"
+      }
+    - {
+      regexp: "^PASS_MIN_DAYS",
+      line: "PASS_MIN_DAYS 1"
+      }
+    - {
+      regexp: "^PASS_MAX_DAYS",
+      line: "PASS_MAX_DAYS 60"
+      }
+  tags: login_defs
+
+# Set Last Logon/Access Notification
