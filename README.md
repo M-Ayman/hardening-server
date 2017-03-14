@@ -26,8 +26,8 @@ Including an example of how to use your role (for instance, with variables passe
 	then, use $ ansible-playbook --list-tags MAyman.harden.yml 
 	# to list all tags, the result like this "TASK TAGS: [login_defs, ntpd, password_policy, sha512, usb_storage]" 
  
- to run a specific tag use $ ansible-playbook MAyman.harden.yml --tags "password_policy,sha51"
- to run all tags use $ ansible-playbook MAyman.harden.yml
+ 	to run a specific tag use $ ansible-playbook MAyman.harden.yml --tags "password_policy,sha51"
+ 	to run all tags use $ ansible-playbook MAyman.harden.yml
 
 Author Information
 ------------------
